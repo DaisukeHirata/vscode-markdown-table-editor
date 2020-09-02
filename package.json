@@ -41,5 +41,8 @@
 		"mocha": "^8.0.1",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.4.0"
+	},
+	"dependencies": {
+		"@susisu/mte-kernel": "^2.1.0"
 	}
 }
