@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Point, ITextEditor } from "@susisu/mte-kernel";
+import { Point, Range, Position, ITextEditor } from "@susisu/mte-kernel";
 
 export default class TextEditorInterface extends ITextEditor {
 
@@ -33,20 +33,23 @@ export default class TextEditorInterface extends ITextEditor {
    * 
    * @param pos A point object which the cursor position is set to.
    */
-  setCursorPosition(pos: vscode.Position) {
-    this.editor.selection = new vscode.Selection(pos, pos);
+  setCursorPosition(pos: Position) {
+    const _pos = new vscode.Position(pos.row, pos.column);
+    this.editor.selection = new vscode.Selection(_pos, _pos);
   }
 
-  setSelectionRange(range) {
-    this.editor.setSelectedBufferRange([
-      [range.start.row, range.start.column],
-      [range.end.row, range.end.column]
-    ]);
+  /**
+   * Sets the selection range. This method also expects the cursor position to be moved as the end of the selection range.
+   *
+   * @param range A range object that describes a selection range.
+   */
+  setSelectionRange(range: Range) {
+    this.editor.selection = new vscode.Selection(range.start.row, range.start.column, range.end.row, range.end.column);
   }
 
   /**
    * Gets the last row index of the text editor.
-   * 
+   *
    * @return number The last row index.
    */
   getLastRow(): number {
@@ -63,32 +66,54 @@ export default class TextEditorInterface extends ITextEditor {
     return false;
   }
 
-  getLine(row) {
-    return this.textBuffer.lineForRow(row);
+  /**
+   * Sets the selection range. This method also expects the cursor position to be moved as the end of the selection range.
+   *
+   * @param row number Row index, starts from 0.
+   * @return string The line at the specified row. The line must not contain an EOL like "\n" or "\r".
+   */
+  getLine(row: number): string {
+    return this.editor.document.lineAt(row).text;
   }
 
-  insertLine(row, line) {
-    const lastRow = this.textBuffer.getLastRow();
-    if (row > lastRow) {
-      const le = this.textBuffer.lineEndingForRow(lastRow);
-      this.textBuffer.append("\n" + line + le, { normalizeLineEndings: true });
-    }
-    else {
-      this.textBuffer.insert([row, 0], line + "\n", { normalizeLineEndings: true });
-    }
+  /**
+   * Inserts a line at a specified row.
+   *
+   * @param row number Row index, starts from 0.
+   * @param line string A string to be inserted. This must not contain an EOL like "\n" or "\r".
+   */
+  insertLine(row: number, line: string) {
+    const lastRow = this.editor.document.lineCount;
+    const insertRow = row > lastRow ? lastRow + 1 : row;
+    this.editor.edit((editBuilder) => {
+      editBuilder.insert(new vscode.Position(insertRow, 0), line + "\n");
+    });
   }
 
-  deleteLine(row) {
-    this.textBuffer.deleteRow(row);
+  /**
+   * Deletes a line at a specified row.
+   *
+   * @param row number Row index, starts from 0.
+   */
+  deleteLine(row: number) {
+    const _range = this.editor.document.lineAt(row).range;
+    this.editor.edit((editBuilder) => {
+      editBuilder.delete(_range);
+    });
   }
 
-  replaceLines(startRow, endRow, lines) {
-    const le = this.textBuffer.lineEndingForRow(endRow - 1);
-    this.textBuffer.setTextInRange(
-      [[startRow, 0], [endRow, 0]],
-      lines.join("\n") + le,
-      { normalizeLineEndings: true }
-    );
+  /**
+   * Replace lines in a specified range.
+   *
+   * @param startRow number Row index, starts from 0.
+   * @param endRow number End row index. Lines from startRow to endRow - 1 is replaced.
+   * @param lines string[] An array of string. Each strings must not contain an EOL like "\n" or "\r".
+   */
+  replaceLines(startRow: number, endRow: number, lines: string[]) {
+    const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
+    this.editor.edit((editBuilder) => {
+      editBuilder.replace(_range, lines.join("\n"));
+    });
   }
 
   transact(func) {
