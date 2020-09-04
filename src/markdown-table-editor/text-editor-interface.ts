@@ -1,21 +1,19 @@
 import * as vscode from 'vscode';
 import { Point, Range, Position, ITextEditor } from "@susisu/mte-kernel";
+import { EventEmitter } from "events";
 
 export default class TextEditorInterface extends ITextEditor {
 
   editor: vscode.TextEditor;
-  textBuffer: any;
-  scopes: any;
+  //scopes: any;
   transaction: boolean;
-  emitter: any;
+  emitter: EventEmitter;
 
-  constructor(textEditor: vscode.TextEditor, scopes) {
+  constructor(textEditor: vscode.TextEditor) {
     super();
     this.editor = textEditor;
-    this.textBuffer = textEditor.getBuffer();
-    this.scopes = scopes;
     this.transaction = false;
-    this.emitter = new Emitter();
+    this.emitter = new EventEmitter();
   }
 
   /**
@@ -56,12 +54,19 @@ export default class TextEditorInterface extends ITextEditor {
     return this.editor.document.lineCount;
   }
 
-  acceptsTableEdit(row) {
-    const sd = this.editor.scopeDescriptorForBufferPosition([row, 0]).getScopesArray();
-    for (const scope of this.scopes) {
-      if (sd.indexOf(scope) >= 0) {
+  /**
+   * Checks if the editor accepts a table at a row to be editted. It should return false if, for example, the row is in a code block (not Markdown).
+   *
+   * @param row number A row index in the text editor.
+   * @return Boolean true if the table at the row can be editted
+   */
+  acceptsTableEdit(row: number): Boolean {
+    const lastRow = this.editor.document.lineCount;
+    if (row < lastRow) {
+      const line = this.editor.document.lineAt(row);
+      if (line.text.startsWith('|')) {
         return true;
-      }
+      }   
     }
     return false;
   }
@@ -73,7 +78,12 @@ export default class TextEditorInterface extends ITextEditor {
    * @return string The line at the specified row. The line must not contain an EOL like "\n" or "\r".
    */
   getLine(row: number): string {
-    return this.editor.document.lineAt(row).text;
+    const lastRow = this.editor.document.lineCount;
+    if (row < lastRow) {
+      return this.editor.document.lineAt(row).text;
+    } else {
+      return "";
+    }
   }
 
   /**
@@ -84,7 +94,7 @@ export default class TextEditorInterface extends ITextEditor {
    */
   insertLine(row: number, line: string) {
     const lastRow = this.editor.document.lineCount;
-    const insertRow = row > lastRow ? lastRow + 1 : row;
+    const insertRow = row > lastRow ? lastRow : row;
     this.editor.edit((editBuilder) => {
       editBuilder.insert(new vscode.Position(insertRow, 0), line + "\n");
     });
@@ -116,18 +126,20 @@ export default class TextEditorInterface extends ITextEditor {
     });
   }
 
-  transact(func) {
+  transact(func: any) {
     this.transaction = true;
-    this.textBuffer.transact(() => { func(); });
-    this.transaction = false;
-    this.emitter.emit("did-finish-transaction");
+    this.editor.edit((editBuilder) => {
+      func();
+      this.transaction = false;
+      this.emitter.emit("did-finish-transaction");
+    });
   }
 
-  onDidFinishTransaction(func) {
+  onDidFinishTransaction(func: any) {
     return this.emitter.on("did-finish-transaction", func);
   }
 
   destroy() {
-    this.emitter.dispose();
+    //this.emitter.dispose();
   }
 }

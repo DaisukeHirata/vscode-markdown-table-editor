@@ -43,6 +43,7 @@
 		"vscode-test": "^1.4.0"
 	},
 	"dependencies": {
-		"@susisu/mte-kernel": "^2.1.0"
+		"@susisu/mte-kernel": "^2.1.0",
+		"events": "^3.2.0"
 	}
 }
