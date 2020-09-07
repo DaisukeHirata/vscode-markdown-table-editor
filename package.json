@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscode-markdown-table-editor.helloWorld"
+		"onCommand:vscode-markdown-table-editor.formatAll"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "vscode-markdown-table-editor.helloWorld",
-				"title": "Hello World"
+				"command": "vscode-markdown-table-editor.formatAll",
+				"title": "VSCode Markdown Table Editor: formatAll"
 			}
 		]
 	},

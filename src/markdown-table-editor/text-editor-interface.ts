@@ -136,7 +136,11 @@ export default class TextEditorInterface extends ITextEditor {
   }
 
   onDidFinishTransaction(func: any) {
-    return this.emitter.on("did-finish-transaction", func);
+    console.log("onDidFinishTransaction");
+    return this.emitter.on("did-finish-transaction", ()=>{
+      console.log("gessdkode");
+      func();
+    });
   }
 
   destroy() {

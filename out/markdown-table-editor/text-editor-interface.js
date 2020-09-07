@@ -121,7 +121,11 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
         });
     }
     onDidFinishTransaction(func) {
-        return this.emitter.on("did-finish-transaction", func);
+        console.log("onDidFinishTransaction");
+        return this.emitter.on("did-finish-transaction", () => {
+            console.log("gessdkode");
+            func();
+        });
     }
     destroy() {
         //this.emitter.dispose();
