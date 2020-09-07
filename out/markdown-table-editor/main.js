@@ -11,7 +11,7 @@ class MarkdownTableEditor {
             if (editor) {
                 const textEditor = new text_editor_interface_1.default(editor); // interface to the text editor
                 const tableEditor = new mte_kernel_1.TableEditor(textEditor);
-                tableEditor.formatAll(mte_kernel_1.options({}));
+                tableEditor.nextCell(mte_kernel_1.options({}));
             }
         };
     }

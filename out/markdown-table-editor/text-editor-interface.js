@@ -84,9 +84,19 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
     insertLine(row, line) {
         const lastRow = this.editor.document.lineCount;
         const insertRow = row > lastRow ? lastRow : row;
-        this.editor.edit((editBuilder) => {
-            editBuilder.insert(new vscode.Position(insertRow, 0), line + "\n");
-        });
+        console.log(`${row} ${lastRow} ${insertRow} ${line}`);
+        if (this.transaction) {
+            if (row === lastRow) {
+                // append
+                line = "\n" + line;
+            }
+            this.editBuilder.insert(new vscode.Position(insertRow, 0), line);
+        }
+        else {
+            this.editor.edit((editBuilder) => {
+                editBuilder.insert(new vscode.Position(insertRow, 0), line + "\n");
+            });
+        }
     }
     /**
      * Deletes a line at a specified row.
@@ -95,9 +105,14 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      */
     deleteLine(row) {
         const _range = this.editor.document.lineAt(row).range;
-        this.editor.edit((editBuilder) => {
-            editBuilder.delete(_range);
-        });
+        if (this.transaction) {
+            this.editBuilder.delete(_range);
+        }
+        else {
+            this.editor.edit((editBuilder) => {
+                editBuilder.delete(_range);
+            });
+        }
     }
     /**
      * Replace lines in a specified range.
@@ -108,13 +123,19 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      */
     replaceLines(startRow, endRow, lines) {
         const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
-        this.editor.edit((editBuilder) => {
-            editBuilder.replace(_range, lines.join("\n"));
-        });
+        if (this.transaction) {
+            this.editBuilder.replace(_range, lines.join("\n"));
+        }
+        else {
+            this.editor.edit((editBuilder) => {
+                editBuilder.replace(_range, lines.join("\n"));
+            });
+        }
     }
     transact(func) {
         this.transaction = true;
         this.editor.edit((editBuilder) => {
+            this.editBuilder = editBuilder;
             func();
             this.transaction = false;
             this.emitter.emit("did-finish-transaction");
