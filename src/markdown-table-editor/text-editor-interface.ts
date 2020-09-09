@@ -1,20 +1,16 @@
 import * as vscode from 'vscode';
 import { Point, Range, Position, ITextEditor } from "@susisu/mte-kernel";
-import { EventEmitter } from "events";
 
 export default class TextEditorInterface extends ITextEditor {
 
   editor: vscode.TextEditor;
-  //scopes: any;
   transaction: boolean;
-  emitter: EventEmitter;
-  editBuilder: vscode.TextEditorEdit;
+  editBuilder: vscode.TextEditorEdit | undefined;
 
   constructor(textEditor: vscode.TextEditor) {
     super();
     this.editor = textEditor;
     this.transaction = false;
-    this.emitter = new EventEmitter();
   }
 
   /**
@@ -28,13 +24,16 @@ export default class TextEditorInterface extends ITextEditor {
   }
 
   /**
-   * Sets the cursor position to a specified one.
+   * Sets the cursor position  to a specified one.
    * 
    * @param pos A point object which the cursor position is set to.
    */
   setCursorPosition(pos: Position) {
     const _pos = new vscode.Position(pos.row, pos.column);
-    this.editor.selection = new vscode.Selection(_pos, _pos);
+    // look for better implementation
+    setTimeout(() => {
+      this.editor.selection = new vscode.Selection(_pos, _pos);
+    }, 1, 'setCursorPosition');
   }
 
   /**
@@ -52,7 +51,8 @@ export default class TextEditorInterface extends ITextEditor {
    * @return number The last row index.
    */
   getLastRow(): number {
-    return this.editor.document.lineCount;
+    const lastRow = this.editor.document.lineCount - 1;
+    return lastRow;
   }
 
   /**
@@ -62,13 +62,19 @@ export default class TextEditorInterface extends ITextEditor {
    * @return Boolean true if the table at the row can be editted
    */
   acceptsTableEdit(row: number): Boolean {
-    const lastRow = this.editor.document.lineCount;
-    if (row < lastRow) {
-      const line = this.editor.document.lineAt(row);
-      if (line.text.startsWith('|')) {
-        return true;
-      }   
+    const lastRow = this.getLastRow();
+    if (row > lastRow) {
+//      vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', false);	
+      return false;
     }
+
+    const line = this.editor.document.lineAt(row);
+    if (line.text.startsWith('|')) {
+//      vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', true);	
+      return true;
+    }
+
+//    vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', false);	
     return false;
   }
 
@@ -79,12 +85,11 @@ export default class TextEditorInterface extends ITextEditor {
    * @return string The line at the specified row. The line must not contain an EOL like "\n" or "\r".
    */
   getLine(row: number): string {
-    const lastRow = this.editor.document.lineCount;
-    if (row < lastRow) {
-      return this.editor.document.lineAt(row).text;
-    } else {
+    const lastRow = this.getLastRow();
+    if (row > lastRow) {
       return "";
     }
+    return this.editor.document.lineAt(row).text;
   }
 
   /**
@@ -94,19 +99,19 @@ export default class TextEditorInterface extends ITextEditor {
    * @param line string A string to be inserted. This must not contain an EOL like "\n" or "\r".
    */
   insertLine(row: number, line: string) {
-    const lastRow = this.editor.document.lineCount;
-    const insertRow = row > lastRow ? lastRow : row;
-    console.log(`${row} ${lastRow} ${insertRow} ${line}`);
-    if (this.transaction) {
-      if (row === lastRow) {
-        // append
+    const lastRow = this.getLastRow();
+    console.log(`${row} ${lastRow} ${line}`);
+    if (this.transaction && this.editBuilder) {
+      if (row > lastRow) {
+        // for appending a new line
         line = "\n" + line;
       }
-      this.editBuilder.insert(new vscode.Position(insertRow, 0), line);
-    } else {
-      this.editor.edit((editBuilder) => {
-        editBuilder.insert(new vscode.Position(insertRow, 0), line + "\n");
-      });
+      // // insert a new line  
+      // if (line.match(/^([|]\s+)+[|]$/)) {
+      //   console.log("match");
+      //   line = line + "\n";
+      // }
+      this.editBuilder.insert(new vscode.Position(row, 0), line);
     }
   }
 
@@ -116,13 +121,15 @@ export default class TextEditorInterface extends ITextEditor {
    * @param row number Row index, starts from 0.
    */
   deleteLine(row: number) {
+    const lastRow = this.getLastRow();
+    if (row > lastRow) {
+      return;
+    }
+
+    console.log(`delete ${row}`);
     const _range = this.editor.document.lineAt(row).range;
-    if (this.transaction) {
+    if (this.transaction && this.editBuilder) {
       this.editBuilder.delete(_range);
-    } else {
-      this.editor.edit((editBuilder) => {
-        editBuilder.delete(_range);
-      });
     }
   }
 
@@ -135,12 +142,8 @@ export default class TextEditorInterface extends ITextEditor {
    */
   replaceLines(startRow: number, endRow: number, lines: string[]) {
     const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
-    if (this.transaction) {
+    if (this.transaction && this.editBuilder) {
       this.editBuilder.replace(_range, lines.join("\n"));
-    } else {
-      this.editor.edit((editBuilder) => {
-        editBuilder.replace(_range, lines.join("\n"));
-      });
     }
   }
 
@@ -150,19 +153,9 @@ export default class TextEditorInterface extends ITextEditor {
       this.editBuilder = editBuilder;
       func();
       this.transaction = false;
-      this.emitter.emit("did-finish-transaction");
-    });
-  }
-
-  onDidFinishTransaction(func: any) {
-    console.log("onDidFinishTransaction");
-    return this.emitter.on("did-finish-transaction", ()=>{
-      console.log("gessdkode");
-      func();
     });
   }
 
   destroy() {
-    //this.emitter.dispose();
   }
 }

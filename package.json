@@ -10,15 +10,111 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscode-markdown-table-editor.formatAll"
+		"*",
+		"onLanguage:markdown",
+		"onCommand:vscode-markdown-table-editor.formatAll",
+		"onCommand:vscode-markdown-table-editor.format",
+		"onCommand:vscode-markdown-table-editor.cursorIsInTable",
+		"onCommand:vscode-markdown-table-editor.deleteColumn",
+		"onCommand:vscode-markdown-table-editor.deleteRow",
+		"onCommand:vscode-markdown-table-editor.escape",
+		"onCommand:vscode-markdown-table-editor.insertColumn",
+		"onCommand:vscode-markdown-table-editor.insertRow",
+		"onCommand:vscode-markdown-table-editor.nextRow",
+		"onCommand:vscode-markdown-table-editor.nextCell",
+		"onCommand:vscode-markdown-table-editor.previousCell",
+		"onCommand:vscode-markdown-table-editor.resetSmartCursor",
+		"onCommand:vscode-markdown-table-editor.selectCell",
+		"onCommand:vscode-markdown-table-editor.keyBindings"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "vscode-markdown-table-editor.formatAll",
-				"title": "VSCode Markdown Table Editor: formatAll - Formats all the tables in the text editor."
-			}
+				"title": "VSCode Markdown Table Editor: Format All - Formats all the tables in the text editor."
+			},
+			{
+				"command": "vscode-markdown-table-editor.format",
+				"title": "VSCode Markdown Table Editor: Format - Formats the table under the cursor."
+			},			
+			{
+				"command": "vscode-markdown-table-editor.cursorIsInTable",
+				"title": "VSCode Markdown Table Editor: Cursor Is In Table - Checks if the cursor is in a table row."
+			},
+			{
+				"command": "vscode-markdown-table-editor.deleteColumn",
+				"title": "VSCode Markdown Table Editor: Delete Column - Deletes a column at the current focus."
+			},
+			{
+				"command": "vscode-markdown-table-editor.deleteRow",
+				"title": "VSCode Markdown Table Editor: Delete Row - Deletes a row at the current focus."
+			},
+			{
+				"command": "vscode-markdown-table-editor.escape",
+				"title": "VSCode Markdown Table Editor: Escape - Formats and escapes from the table."
+			},
+			{
+				"command": "vscode-markdown-table-editor.insertColumn",
+				"title": "VSCode Markdown Table Editor: Insert Column - Inserts an empty column at the current focus."
+			},
+			{
+				"command": "vscode-markdown-table-editor.insertRow",
+				"title": "VSCode Markdown Table Editor: Insert Row - Inserts an empty row at the current focus."
+			},
+			{
+				"command": "vscode-markdown-table-editor.nextRow",
+				"title": "VSCode Markdown Table Editor: Next Row - Moves the focus to the next row."
+			},
+			{
+				"command": "vscode-markdown-table-editor.nextCell",
+				"title": "VSCode Markdown Table Editor: Next Cell - Moves the focus to the next cell."
+			},
+			{
+				"command": "vscode-markdown-table-editor.previousCell",
+				"title": "VSCode Markdown Table Editor: Previous Cell - Moves the focus to the previous cell."
+			},
+			{
+				"command": "vscode-markdown-table-editor.resetSmartCursor",
+				"title": "VSCode Markdown Table Editor: Reset Smart Cursor - Resets the smart cursor."
+			},
+			{
+				"command": "vscode-markdown-table-editor.selectCell",
+				"title": "VSCode Markdown Table Editor: Select Cell - Selects the focused cell content."
+			},
+			{
+				"command": "vscode-markdown-table-editor.keyBindings",
+				"title": "VSCode Markdown Table Editor: Key Bindings - Formats all the tables in the text editor.",
+				"args": { "text": "Hello World" }
+			}			
+		],
+		"keybindings": [
+			{
+				"command": "vscode-markdown-table-editor.keyBindings",
+				"key": "tab",
+				"mac": "tab",
+				"args": { "command": "nextCell" },
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscode-markdown-table-editor.keyBindings",
+				"key": "enter",
+				"mac": "enter",
+				"args": { "command": "nextRow" },
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscode-markdown-table-editor.previousCell",
+				"key": "shift+tab",
+				"mac": "shift+tab",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "vscode-markdown-table-editor.escape",
+				"key": "escape",
+				"mac": "escape",
+				"when": "editorTextFocus"
+			}			
 		]
 	},
 	"scripts": {
@@ -43,7 +139,6 @@
 		"vscode-test": "^1.4.0"
 	},
 	"dependencies": {
-		"@susisu/mte-kernel": "^2.1.0",
-		"events": "^3.2.0"
+		"@susisu/mte-kernel": "^2.1.0"
 	}
 }
