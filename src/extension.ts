@@ -75,6 +75,19 @@ export function activate(context: vscode.ExtensionContext) {
 		main.keyBindings(args);
 	});	
 
+  // let disposableType = vscode.commands.registerCommand('type', e => {
+	// 	console.log(e.text);
+	// 	if (main.cursorIsInTable()) {
+  //     vscode.commands.executeCommand('default:type', {
+  //       text: e.text
+  //     });
+	// 	} else {
+  //     vscode.commands.executeCommand('default:type', {
+  //       text: e.text
+  //     });
+	// 	}
+  // });
+
 	context.subscriptions.push(
 		disposableFormatAll,
 		disposableFortmat,
@@ -88,7 +101,8 @@ export function activate(context: vscode.ExtensionContext) {
 		disposableInsertRow,
 		disposablePreviousCell,
 		disposableResetSmartCursor,
-		disposableSelectCell
+		disposableSelectCell,
+		disposableKeyBindings
 	);
 }
 

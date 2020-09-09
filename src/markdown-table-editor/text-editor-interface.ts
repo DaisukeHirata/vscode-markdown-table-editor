@@ -64,17 +64,14 @@ export default class TextEditorInterface extends ITextEditor {
   acceptsTableEdit(row: number): Boolean {
     const lastRow = this.getLastRow();
     if (row > lastRow) {
-//      vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', false);	
       return false;
     }
 
     const line = this.editor.document.lineAt(row);
     if (line.text.startsWith('|')) {
-//      vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', true);	
       return true;
     }
 
-//    vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', false);	
     return false;
   }
 
@@ -100,17 +97,17 @@ export default class TextEditorInterface extends ITextEditor {
    */
   insertLine(row: number, line: string) {
     const lastRow = this.getLastRow();
-    console.log(`${row} ${lastRow} ${line}`);
     if (this.transaction && this.editBuilder) {
       if (row > lastRow) {
         // for appending a new line
         line = "\n" + line;
+      } 
+      if (row <= lastRow) {
+        const currentLine = this.editor.document.lineAt(row).text;
+        if (!currentLine && line.trim() !== currentLine.trim()) {
+          line = line + "\n";
+        }
       }
-      // // insert a new line  
-      // if (line.match(/^([|]\s+)+[|]$/)) {
-      //   console.log("match");
-      //   line = line + "\n";
-      // }
       this.editBuilder.insert(new vscode.Position(row, 0), line);
     }
   }
@@ -126,7 +123,6 @@ export default class TextEditorInterface extends ITextEditor {
       return;
     }
 
-    console.log(`delete ${row}`);
     const _range = this.editor.document.lineAt(row).range;
     if (this.transaction && this.editBuilder) {
       this.editBuilder.delete(_range);
@@ -143,7 +139,7 @@ export default class TextEditorInterface extends ITextEditor {
   replaceLines(startRow: number, endRow: number, lines: string[]) {
     const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
     if (this.transaction && this.editBuilder) {
-      this.editBuilder.replace(_range, lines.join("\n"));
+      this.editBuilder.replace(_range, lines.join("\n") + "\n");
     }
   }
 

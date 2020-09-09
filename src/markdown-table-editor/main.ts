@@ -48,14 +48,16 @@ export class MarkdownTableEditor {
     }
   };
 
-  public cursorIsInTable = () => {
+  public cursorIsInTable = () : Boolean => {
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const textEditor = new TextEditorInterface(editor);
       const tableEditor = new TableEditor(textEditor);
       const result = tableEditor.cursorIsInTable(options({}));
       vscode.window.showInformationMessage(`Cursor is in Table ${result}`);
+      return result;
     }
+    return false;
   };
 
   public deleteColumn = () => {
@@ -122,15 +124,15 @@ export class MarkdownTableEditor {
   };
 
   public keyBindings = (args: {}) => {
-    console.log(args);
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const textEditor = new TextEditorInterface(editor);
       const tableEditor = new TableEditor(textEditor);
       const result = tableEditor.cursorIsInTable(options({}));
       vscode.window.showInformationMessage(`Cursor is in Table ${result}`);
+      const command = args['command'];
       if (result) {
-        switch (args['command']) {
+        switch (command) {
           case 'nextCell':
             this.nextCell();	
             break;
@@ -138,11 +140,11 @@ export class MarkdownTableEditor {
             this.nextRow();	
             break;
           default:
-            vscode.window.showInformationMessage(`Command is not found ${args['command']}`);
+            vscode.window.showInformationMessage(`Command is not found ${command}`);
             break;
         }
       } else {
-        switch (args['command']) {
+        switch (command) {
           case 'nextCell':
             vscode.commands.executeCommand('type', { 'text': '\t' });
             break;
@@ -150,7 +152,7 @@ export class MarkdownTableEditor {
             vscode.commands.executeCommand('type', { 'text': '\n' });
             break;
           default:
-            vscode.window.showInformationMessage(`Command is not found ${args['command']}`);
+            vscode.window.showInformationMessage(`Command is not found ${command}`);
             break;
         }
       }

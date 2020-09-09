@@ -85,21 +85,21 @@
 			{
 				"command": "vscode-markdown-table-editor.keyBindings",
 				"title": "VSCode Markdown Table Editor: Key Bindings - Formats all the tables in the text editor.",
-				"args": { "text": "Hello World" }
-			}			
+				"args": { "command": "No action" }
+			}
 		],
 		"keybindings": [
 			{
 				"command": "vscode-markdown-table-editor.keyBindings",
-				"key": "tab",
-				"mac": "tab",
+				"key": "ctrl+tab",
+				"mac": "ctrl+tab",
 				"args": { "command": "nextCell" },
 				"when": "editorTextFocus"
 			},
 			{
 				"command": "vscode-markdown-table-editor.keyBindings",
-				"key": "enter",
-				"mac": "enter",
+				"key": "ctrl+enter",
+				"mac": "ctrl+enter",
 				"args": { "command": "nextRow" },
 				"when": "editorTextFocus"
 			},

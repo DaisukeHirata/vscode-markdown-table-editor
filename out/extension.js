@@ -59,7 +59,19 @@ function activate(context) {
     let disposableKeyBindings = vscode.commands.registerCommand('vscode-markdown-table-editor.keyBindings', (args) => {
         main.keyBindings(args);
     });
-    context.subscriptions.push(disposableFormatAll, disposableFortmat, disposableNextRow, disposableNextCell, disposableCursorIsInTable, disposableDeleteColumn, disposableDeleteRow, disposableEscape, disposableInsertColumn, disposableInsertRow, disposablePreviousCell, disposableResetSmartCursor, disposableSelectCell);
+    // let disposableType = vscode.commands.registerCommand('type', e => {
+    // 	console.log(e.text);
+    // 	if (main.cursorIsInTable()) {
+    //     vscode.commands.executeCommand('default:type', {
+    //       text: e.text
+    //     });
+    // 	} else {
+    //     vscode.commands.executeCommand('default:type', {
+    //       text: e.text
+    //     });
+    // 	}
+    // });
+    context.subscriptions.push(disposableFormatAll, disposableFortmat, disposableNextRow, disposableNextCell, disposableCursorIsInTable, disposableDeleteColumn, disposableDeleteRow, disposableEscape, disposableInsertColumn, disposableInsertRow, disposablePreviousCell, disposableResetSmartCursor, disposableSelectCell, disposableKeyBindings);
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated

@@ -55,15 +55,12 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
     acceptsTableEdit(row) {
         const lastRow = this.getLastRow();
         if (row > lastRow) {
-            //      vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', false);	
             return false;
         }
         const line = this.editor.document.lineAt(row);
         if (line.text.startsWith('|')) {
-            //      vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', true);	
             return true;
         }
-        //    vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor:cool', false);	
         return false;
     }
     /**
@@ -87,17 +84,17 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      */
     insertLine(row, line) {
         const lastRow = this.getLastRow();
-        console.log(`${row} ${lastRow} ${line}`);
         if (this.transaction && this.editBuilder) {
             if (row > lastRow) {
                 // for appending a new line
                 line = "\n" + line;
             }
-            // // insert a new line  
-            // if (line.match(/^([|]\s+)+[|]$/)) {
-            //   console.log("match");
-            //   line = line + "\n";
-            // }
+            if (row <= lastRow) {
+                const currentLine = this.editor.document.lineAt(row).text;
+                if (!currentLine && line.trim() !== currentLine.trim()) {
+                    line = line + "\n";
+                }
+            }
             this.editBuilder.insert(new vscode.Position(row, 0), line);
         }
     }
@@ -111,7 +108,6 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
         if (row > lastRow) {
             return;
         }
-        console.log(`delete ${row}`);
         const _range = this.editor.document.lineAt(row).range;
         if (this.transaction && this.editBuilder) {
             this.editBuilder.delete(_range);
@@ -127,7 +123,7 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
     replaceLines(startRow, endRow, lines) {
         const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
         if (this.transaction && this.editBuilder) {
-            this.editBuilder.replace(_range, lines.join("\n"));
+            this.editBuilder.replace(_range, lines.join("\n") + "\n");
         }
     }
     transact(func) {
