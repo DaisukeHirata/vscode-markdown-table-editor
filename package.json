@@ -10,7 +10,6 @@
 		"Other"
 	],
 	"activationEvents": [
-		"*",
 		"onLanguage:markdown",
 		"onCommand:vscode-markdown-table-editor.formatAll",
 		"onCommand:vscode-markdown-table-editor.format",
@@ -32,81 +31,94 @@
 		"commands": [
 			{
 				"command": "vscode-markdown-table-editor.formatAll",
-				"title": "VSCode Markdown Table Editor: Format All - Formats all the tables in the text editor."
+				"title": "VSCode Markdown Table Editor: Format All - Formats all the tables in the text editor.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.format",
-				"title": "VSCode Markdown Table Editor: Format - Formats the table under the cursor."
+				"title": "VSCode Markdown Table Editor: Format - Formats the table under the cursor.",
+				"when": "editorLangId == markdown"
 			},			
 			{
 				"command": "vscode-markdown-table-editor.cursorIsInTable",
-				"title": "VSCode Markdown Table Editor: Cursor Is In Table - Checks if the cursor is in a table row."
+				"title": "VSCode Markdown Table Editor: Cursor Is In Table - Checks if the cursor is in a table row.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.deleteColumn",
-				"title": "VSCode Markdown Table Editor: Delete Column - Deletes a column at the current focus."
+				"title": "VSCode Markdown Table Editor: Delete Column - Deletes a column at the current focus.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.deleteRow",
-				"title": "VSCode Markdown Table Editor: Delete Row - Deletes a row at the current focus."
+				"title": "VSCode Markdown Table Editor: Delete Row - Deletes a row at the current focus.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.escape",
-				"title": "VSCode Markdown Table Editor: Escape - Formats and escapes from the table."
+				"title": "VSCode Markdown Table Editor: Escape - Formats and escapes from the table.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.insertColumn",
-				"title": "VSCode Markdown Table Editor: Insert Column - Inserts an empty column at the current focus."
+				"title": "VSCode Markdown Table Editor: Insert Column - Inserts an empty column at the current focus.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.insertRow",
-				"title": "VSCode Markdown Table Editor: Insert Row - Inserts an empty row at the current focus."
+				"title": "VSCode Markdown Table Editor: Insert Row - Inserts an empty row at the current focus.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.nextRow",
-				"title": "VSCode Markdown Table Editor: Next Row - Moves the focus to the next row."
+				"title": "VSCode Markdown Table Editor: Next Row - Moves the focus to the next row.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.nextCell",
-				"title": "VSCode Markdown Table Editor: Next Cell - Moves the focus to the next cell."
+				"title": "VSCode Markdown Table Editor: Next Cell - Moves the focus to the next cell.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.previousCell",
-				"title": "VSCode Markdown Table Editor: Previous Cell - Moves the focus to the previous cell."
+				"title": "VSCode Markdown Table Editor: Previous Cell - Moves the focus to the previous cell.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.resetSmartCursor",
-				"title": "VSCode Markdown Table Editor: Reset Smart Cursor - Resets the smart cursor."
+				"title": "VSCode Markdown Table Editor: Reset Smart Cursor - Resets the smart cursor.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.selectCell",
-				"title": "VSCode Markdown Table Editor: Select Cell - Selects the focused cell content."
+				"title": "VSCode Markdown Table Editor: Select Cell - Selects the focused cell content.",
+				"when": "editorLangId == markdown"
 			},
 			{
 				"command": "vscode-markdown-table-editor.keyBindings",
 				"title": "VSCode Markdown Table Editor: Key Bindings - Formats all the tables in the text editor.",
-				"args": { "command": "No action" }
+				"when": "editorLangId == markdown"
 			}
 		],
 		"keybindings": [
 			{
 				"command": "vscode-markdown-table-editor.keyBindings",
-				"key": "ctrl+tab",
-				"mac": "ctrl+tab",
+				"key": "ctrl+alt+tab",
+				"mac": "cmd+alt+tab",
 				"args": { "command": "nextCell" },
 				"when": "editorTextFocus"
 			},
 			{
 				"command": "vscode-markdown-table-editor.keyBindings",
-				"key": "ctrl+enter",
-				"mac": "ctrl+enter",
+				"key": "ctrl+alt+enter",
+				"mac": "cmd+alt+enter",
 				"args": { "command": "nextRow" },
 				"when": "editorTextFocus"
 			},
 			{
 				"command": "vscode-markdown-table-editor.previousCell",
-				"key": "shift+tab",
-				"mac": "shift+tab",
+				"key": "ctrl+shift+tab",
+				"mac": "cmd+shift+tab",
 				"when": "editorTextFocus"
 			},
 			{

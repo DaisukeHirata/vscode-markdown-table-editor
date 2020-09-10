@@ -52,7 +52,6 @@ class MarkdownTableEditor {
                 const textEditor = new text_editor_interface_1.default(editor);
                 const tableEditor = new mte_kernel_1.TableEditor(textEditor);
                 const result = tableEditor.cursorIsInTable(mte_kernel_1.options({}));
-                vscode.window.showInformationMessage(`Cursor is in Table ${result}`);
                 return result;
             }
             return false;
@@ -119,7 +118,6 @@ class MarkdownTableEditor {
                 const textEditor = new text_editor_interface_1.default(editor);
                 const tableEditor = new mte_kernel_1.TableEditor(textEditor);
                 const result = tableEditor.cursorIsInTable(mte_kernel_1.options({}));
-                vscode.window.showInformationMessage(`Cursor is in Table ${result}`);
                 const command = args['command'];
                 if (result) {
                     switch (command) {

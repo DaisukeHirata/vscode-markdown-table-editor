@@ -71,16 +71,16 @@ export function activate(context: vscode.ExtensionContext) {
 		main.selectCell();
 	});	
 
-	let disposableKeyBindings = vscode.commands.registerCommand('vscode-markdown-table-editor.keyBindings', (args: {}) => {
+	let disposableKeyBindings = vscode.commands.registerCommand('vscode-markdown-table-editor.keyBindings', args => {
 		main.keyBindings(args);
 	});	
 
   // let disposableType = vscode.commands.registerCommand('type', e => {
-	// 	console.log(e.text);
 	// 	if (main.cursorIsInTable()) {
   //     vscode.commands.executeCommand('default:type', {
   //       text: e.text
-  //     });
+	// 		});
+	// 		main.format();
 	// 	} else {
   //     vscode.commands.executeCommand('default:type', {
   //       text: e.text
