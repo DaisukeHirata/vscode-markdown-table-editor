@@ -12,9 +12,6 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "vscode-markdown-table-editor" is now active!');
 
 	const main = new MarkdownTableEditor();
-	// if (main.cursorIsInTable()) {
-	// 	main.enableTableEditingMode();
-	// }
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand

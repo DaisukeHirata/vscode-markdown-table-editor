@@ -1,8 +1,20 @@
 import * as vscode from 'vscode';
 import { TableEditor, options } from "@susisu/mte-kernel";
 import TextEditorInterface from "./text-editor-interface";
+import { runInThisContext } from 'vm';
 
 export class MarkdownTableEditor {
+
+  private tableEditor: TableEditor;
+
+  constructor() {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const textEditor = new TextEditorInterface(editor); // interface to the text editor
+      this.tableEditor = new TableEditor(textEditor);
+    }
+  }
+
   public enableTableEditingMode = () => {
     this.changeTableEditingMode(true);
   };
@@ -20,155 +32,83 @@ export class MarkdownTableEditor {
   };
 
   public formatAll = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor); // interface to the text editor
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.formatAll(options({}));
-    }
+    this.tableEditor.formatAll(options({}));
   };
 
   public format = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.format(options({}));
-    }
+    this.tableEditor.format(options({}));
   };
 
   public nextCell = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.nextCell(options({}));
-    }
+    this.tableEditor.nextCell(options({}));
   };
 
   public previousCell = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.previousCell(options({}));
-    }
+    this.tableEditor.previousCell(options({}));    
   };  
 
   public nextRow = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.nextRow(options({}));
-    }
+    this.tableEditor.nextRow(options({}));
   };
 
   public cursorIsInTable = () : Boolean => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      const result = tableEditor.cursorIsInTable(options({}));
-      return result;
-    }
-    return false;
+    return this.tableEditor.cursorIsInTable(options({}));
   };
 
   public deleteColumn = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.deleteColumn(options({}));
-    }
+    this.tableEditor.deleteColumn(options({}));
   };
 
   public deleteRow = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.deleteRow(options({}));
-    }
+    this.tableEditor.deleteRow(options({}));
   };
 
   public escape = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.escape(options({}));
-    }
+    this.tableEditor.escape(options({}));
   };
 
   public insertColumn = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.insertColumn(options({}));
-    }
+    this.tableEditor.insertColumn(options({}));
   };
 
   public insertRow = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.insertRow(options({}));
-    }
+    this.tableEditor.insertRow(options({}));
   };
 
   public resetSmartCursor = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.resetSmartCursor();
-    }
+    this.tableEditor.resetSmartCursor();
   };
   
   public selectCell = () => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      tableEditor.selectCell(options({}));
-    }
+    this.tableEditor.selectCell(options({}));
   };
 
   public keyBindings = (args: {}) => {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      const textEditor = new TextEditorInterface(editor);
-      const tableEditor = new TableEditor(textEditor);
-      const result = tableEditor.cursorIsInTable(options({}));
-      const command = args['command'];
-      if (result) {
-        switch (command) {
-          case 'nextCell':
-            this.nextCell();	
-            break;
-          case 'nextRow':
-            this.nextRow();	
-            break;
-          default:
-            vscode.window.showInformationMessage(`Command is not found ${command}`);
-            break;
-        }
-      } else {
-        switch (command) {
-          case 'nextCell':
-            vscode.commands.executeCommand('type', { 'text': '\t' });
-            break;
-          case 'nextRow':
-            vscode.commands.executeCommand('type', { 'text': '\n' });
-            break;
-          default:
-            vscode.window.showInformationMessage(`Command is not found ${command}`);
-            break;
-        }
+    const result = this.tableEditor.cursorIsInTable(options({}));
+    const command = args['command'];
+    if (result) {
+      switch (command) {
+        case 'nextCell':
+          this.nextCell();	
+          break;
+        case 'nextRow':
+          this.nextRow();	
+          break;
+        default:
+          vscode.window.showInformationMessage(`Command is not found ${command}`);
+          break;
+      }
+    } else {
+      switch (command) {
+        case 'nextCell':
+          vscode.commands.executeCommand('type', { 'text': '\t' });
+          break;
+        case 'nextRow':
+          vscode.commands.executeCommand('type', { 'text': '\n' });
+          break;
+        default:
+          vscode.window.showInformationMessage(`Command is not found ${command}`);
+          break;
       }
     }
   };  
