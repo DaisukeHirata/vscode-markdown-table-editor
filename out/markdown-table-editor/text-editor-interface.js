@@ -57,8 +57,8 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
         if (row > lastRow) {
             return false;
         }
-        const line = this.editor.document.lineAt(row);
-        if (line.text.startsWith('|')) {
+        const line = this.editor.document.lineAt(row).text.trimLeft();
+        if (line.startsWith('|')) {
             return true;
         }
         return false;

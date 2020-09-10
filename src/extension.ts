@@ -12,81 +12,100 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "vscode-markdown-table-editor" is now active!');
 
 	const main = new MarkdownTableEditor();
+	if (main.cursorIsInTable()) {
+		main.enableTableEditingMode();
+	}
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposableFormatAll = vscode.commands.registerCommand('vscode-markdown-table-editor.formatAll', () => {
+	const disposableFormatAll = vscode.commands.registerCommand('vscode-markdown-table-editor.formatAll', () => {
 		// The code you place here will be executed every time your command is executed
 
 		// Display a message box to the user
 		main.formatAll();
 	});
 
-	let disposableFortmat = vscode.commands.registerCommand('vscode-markdown-table-editor.format', () => {
+	const disposableFortmat = vscode.commands.registerCommand('vscode-markdown-table-editor.format', () => {
 		main.format();
 	});
 
-	let disposableNextRow = vscode.commands.registerCommand('vscode-markdown-table-editor.nextRow', () => {
+	const disposableNextRow = vscode.commands.registerCommand('vscode-markdown-table-editor.nextRow', () => {
 		main.nextRow();
 	});
 
-	let disposableNextCell = vscode.commands.registerCommand('vscode-markdown-table-editor.nextCell', () => {
+	const disposableNextCell = vscode.commands.registerCommand('vscode-markdown-table-editor.nextCell', () => {
 		main.nextCell();
 	});
 
-	let disposablePreviousCell = vscode.commands.registerCommand('vscode-markdown-table-editor.previousCell', () => {
+	const disposablePreviousCell = vscode.commands.registerCommand('vscode-markdown-table-editor.previousCell', () => {
 		main.previousCell();
 	});
 
-	let disposableCursorIsInTable = vscode.commands.registerCommand('vscode-markdown-table-editor.cursorIsInTable', () => {
+	const disposableCursorIsInTable = vscode.commands.registerCommand('vscode-markdown-table-editor.cursorIsInTable', () => {
 		main.cursorIsInTable();
 	});
 
-	let disposableDeleteColumn = vscode.commands.registerCommand('vscode-markdown-table-editor.deleteColumn', () => {
+	const disposableDeleteColumn = vscode.commands.registerCommand('vscode-markdown-table-editor.deleteColumn', () => {
 		main.deleteColumn();
 	});
 
-	let disposableDeleteRow = vscode.commands.registerCommand('vscode-markdown-table-editor.deleteRow', () => {
+	const disposableDeleteRow = vscode.commands.registerCommand('vscode-markdown-table-editor.deleteRow', () => {
 		main.deleteRow();
 	});
 
-	let disposableEscape = vscode.commands.registerCommand('vscode-markdown-table-editor.escape', () => {
+	const disposableEscape = vscode.commands.registerCommand('vscode-markdown-table-editor.escape', () => {
 		main.escape();
+		main.disableTableEditingMode();
 	});
 
-	let disposableInsertColumn = vscode.commands.registerCommand('vscode-markdown-table-editor.insertColumn', () => {
+	const disposableInsertColumn = vscode.commands.registerCommand('vscode-markdown-table-editor.insertColumn', () => {
 		main.insertColumn();
 	});
 
-	let disposableInsertRow = vscode.commands.registerCommand('vscode-markdown-table-editor.insertRow', () => {
+	const disposableInsertRow = vscode.commands.registerCommand('vscode-markdown-table-editor.insertRow', () => {
 		main.insertRow();
 	});
 
-	let disposableResetSmartCursor = vscode.commands.registerCommand('vscode-markdown-table-editor.resetSmartCursor', () => {
+	const disposableResetSmartCursor = vscode.commands.registerCommand('vscode-markdown-table-editor.resetSmartCursor', () => {
 		main.resetSmartCursor();
 	});
 
-	let disposableSelectCell = vscode.commands.registerCommand('vscode-markdown-table-editor.selectCell', () => {
+	const disposableSelectCell = vscode.commands.registerCommand('vscode-markdown-table-editor.selectCell', () => {
 		main.selectCell();
 	});	
 
-	let disposableKeyBindings = vscode.commands.registerCommand('vscode-markdown-table-editor.keyBindings', args => {
+	const disposableKeyBindings = vscode.commands.registerCommand('vscode-markdown-table-editor.keyBindings', args => {
 		main.keyBindings(args);
-	});	
+	});
 
-  // let disposableType = vscode.commands.registerCommand('type', e => {
-	// 	if (main.cursorIsInTable()) {
-  //     vscode.commands.executeCommand('default:type', {
-  //       text: e.text
-	// 		});
-	// 		main.format();
-	// 	} else {
-  //     vscode.commands.executeCommand('default:type', {
-  //       text: e.text
-  //     });
-	// 	}
-  // });
+	const disposableEnableTableEditingMode = vscode.commands.registerCommand('vscode-markdown-table-editor.enableTableEditingMode', () => {
+		main.enableTableEditingMode();
+	});
+
+	const disposableDisableTableEditingMode = vscode.commands.registerCommand('vscode-markdown-table-editor.disableTableEditingMode', () => {
+		main.disableTableEditingMode();
+	});
+
+  // detect cursor movement event
+  const disposableOnDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
+		const selection = e.textEditor.selection;
+		console.log(selection.isEmpty);
+		console.log(selection);
+		if (selection.isEmpty) {
+			if (main.cursorIsInTable()) {
+				main.enableTableEditingMode();
+			} else {
+				main.disableTableEditingMode();
+			}
+		} else {
+			if (selection.start.line === selection.end.line) {
+				main.enableTableEditingMode();
+			} else {
+				main.disableTableEditingMode();
+			}
+		}
+	});	
 
 	context.subscriptions.push(
 		disposableFormatAll,
@@ -102,7 +121,10 @@ export function activate(context: vscode.ExtensionContext) {
 		disposablePreviousCell,
 		disposableResetSmartCursor,
 		disposableSelectCell,
-		disposableKeyBindings
+		disposableKeyBindings,
+		disposableEnableTableEditingMode,
+		disposableDisableTableEditingMode,
+		disposableOnDidChangeTextEditorSelection
 	);
 }
 

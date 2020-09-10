@@ -67,8 +67,8 @@ export default class TextEditorInterface extends ITextEditor {
       return false;
     }
 
-    const line = this.editor.document.lineAt(row);
-    if (line.text.startsWith('|')) {
+    const line = this.editor.document.lineAt(row).text.trimLeft();
+    if (line.startsWith('|')) {
       return true;
     }
 

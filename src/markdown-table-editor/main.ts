@@ -3,6 +3,22 @@ import { TableEditor, options } from "@susisu/mte-kernel";
 import TextEditorInterface from "./text-editor-interface";
 
 export class MarkdownTableEditor {
+  public enableTableEditingMode = () => {
+    this.changeTableEditingMode(true);
+  };
+
+  public disableTableEditingMode = () => {
+    this.changeTableEditingMode(false);
+  };
+
+  private changeTableEditingMode = (bool: Boolean) => {
+    vscode.commands.executeCommand(
+      'setContext',
+      'vscode-markdown-table-editor.enabled',
+      bool
+    );
+  };
+
   public formatAll = () => {
     const editor = vscode.window.activeTextEditor;
     if (editor) {

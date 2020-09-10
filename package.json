@@ -98,7 +98,17 @@
 				"command": "vscode-markdown-table-editor.keyBindings",
 				"title": "VSCode Markdown Table Editor: Key Bindings - Formats all the tables in the text editor.",
 				"when": "editorLangId == markdown"
-			}
+			},
+			{
+				"command": "vscode-markdown-table-editor.enableTableEditingMode",
+				"title": "VSCode Markdown Table Editor: Enable Table Editing Mode - enable Table Editing Mode.",
+				"when": "editorLangId == markdown"
+			},
+			{
+				"command": "vscode-markdown-table-editor.disableTableEditingMode",
+				"title": "VSCode Markdown Table Editor: Disable Table Editing Mode - disable Table Editing Mode.",
+				"when": "editorLangId == markdown"
+			}			
 		],
 		"keybindings": [
 			{
@@ -109,6 +119,12 @@
 				"when": "editorTextFocus"
 			},
 			{
+				"command": "vscode-markdown-table-editor.nextCell",
+				"key": "tab",
+				"mac": "tab",
+				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+			},
+			{
 				"command": "vscode-markdown-table-editor.keyBindings",
 				"key": "ctrl+alt+enter",
 				"mac": "cmd+alt+enter",
@@ -116,10 +132,16 @@
 				"when": "editorTextFocus"
 			},
 			{
+				"command": "vscode-markdown-table-editor.nextRow",
+				"key": "enter",
+				"mac": "enter",
+				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+			},			
+			{
 				"command": "vscode-markdown-table-editor.previousCell",
-				"key": "ctrl+shift+tab",
-				"mac": "cmd+shift+tab",
-				"when": "editorTextFocus"
+				"key": "shift+tab",
+				"mac": "shift+tab",
+				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
 			},
 			{
 				"command": "vscode-markdown-table-editor.escape",

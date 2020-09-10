@@ -6,6 +6,15 @@ const mte_kernel_1 = require("@susisu/mte-kernel");
 const text_editor_interface_1 = require("./text-editor-interface");
 class MarkdownTableEditor {
     constructor() {
+        this.enableTableEditingMode = () => {
+            this.changeTableEditingMode(true);
+        };
+        this.disableTableEditingMode = () => {
+            this.changeTableEditingMode(false);
+        };
+        this.changeTableEditingMode = (bool) => {
+            vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor.enabled', bool);
+        };
         this.formatAll = () => {
             const editor = vscode.window.activeTextEditor;
             if (editor) {
