@@ -12,9 +12,9 @@ function activate(context) {
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "vscode-markdown-table-editor" is now active!');
     const main = new main_1.MarkdownTableEditor();
-    if (main.cursorIsInTable()) {
-        main.enableTableEditingMode();
-    }
+    // if (main.cursorIsInTable()) {
+    // 	main.enableTableEditingMode();
+    // }
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
@@ -72,8 +72,6 @@ function activate(context) {
     // detect cursor movement event
     const disposableOnDidChangeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(e => {
         const selection = e.textEditor.selection;
-        console.log(selection.isEmpty);
-        console.log(selection);
         if (selection.isEmpty) {
             if (main.cursorIsInTable()) {
                 main.enableTableEditingMode();

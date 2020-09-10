@@ -112,24 +112,10 @@
 		],
 		"keybindings": [
 			{
-				"command": "vscode-markdown-table-editor.keyBindings",
-				"key": "ctrl+alt+tab",
-				"mac": "cmd+alt+tab",
-				"args": { "command": "nextCell" },
-				"when": "editorTextFocus"
-			},
-			{
 				"command": "vscode-markdown-table-editor.nextCell",
 				"key": "tab",
 				"mac": "tab",
 				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
-			},
-			{
-				"command": "vscode-markdown-table-editor.keyBindings",
-				"key": "ctrl+alt+enter",
-				"mac": "cmd+alt+enter",
-				"args": { "command": "nextRow" },
-				"when": "editorTextFocus"
 			},
 			{
 				"command": "vscode-markdown-table-editor.nextRow",
@@ -147,7 +133,7 @@
 				"command": "vscode-markdown-table-editor.escape",
 				"key": "escape",
 				"mac": "escape",
-				"when": "editorTextFocus"
+				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
 			}			
 		]
 	},
