@@ -23,8 +23,7 @@
 		"onCommand:vscode-markdown-table-editor.nextCell",
 		"onCommand:vscode-markdown-table-editor.previousCell",
 		"onCommand:vscode-markdown-table-editor.resetSmartCursor",
-		"onCommand:vscode-markdown-table-editor.selectCell",
-		"onCommand:vscode-markdown-table-editor.keyBindings"
+		"onCommand:vscode-markdown-table-editor.selectCell"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -95,11 +94,6 @@
 				"when": "editorLangId == markdown"
 			},
 			{
-				"command": "vscode-markdown-table-editor.keyBindings",
-				"title": "VSCode Markdown Table Editor: Key Bindings - Formats all the tables in the text editor.",
-				"when": "editorLangId == markdown"
-			},
-			{
 				"command": "vscode-markdown-table-editor.enableTableEditingMode",
 				"title": "VSCode Markdown Table Editor: Enable Table Editing Mode - enable Table Editing Mode.",
 				"when": "editorLangId == markdown"
@@ -115,25 +109,25 @@
 				"command": "vscode-markdown-table-editor.nextCell",
 				"key": "tab",
 				"mac": "tab",
-				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+				"when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus"
 			},
 			{
 				"command": "vscode-markdown-table-editor.nextRow",
 				"key": "enter",
 				"mac": "enter",
-				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
-			},			
+				"when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus"
+			},
 			{
 				"command": "vscode-markdown-table-editor.previousCell",
 				"key": "shift+tab",
 				"mac": "shift+tab",
-				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+				"when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus"
 			},
 			{
 				"command": "vscode-markdown-table-editor.escape",
 				"key": "escape",
 				"mac": "escape",
-				"when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+				"when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus"
 			}			
 		]
 	},

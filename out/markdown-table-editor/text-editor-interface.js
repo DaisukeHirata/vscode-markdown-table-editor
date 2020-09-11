@@ -23,8 +23,7 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      * @param pos A point object which the cursor position is set to.
      */
     setCursorPosition(pos) {
-        const _pos = new vscode.Position(pos.row, pos.column - 1);
-        console.log(_pos);
+        const _pos = new vscode.Position(pos.row, pos.column);
         // look for better implementation
         setTimeout(() => {
             this.editor.selection = new vscode.Selection(_pos, _pos);
@@ -84,46 +83,34 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      * @param line string A string to be inserted. This must not contain an EOL like "\n" or "\r".
      */
     insertLine(row, line) {
-        const lastRow = this.getLastRow();
-        if (this.transaction && this.editBuilder) {
-            if (row > lastRow) {
-                // for appending a new line
-                //        line = "\n" + line;
-            }
-            if (row <= lastRow) {
-                // const currentLine = this.editor.document.lineAt(row).text;
-                // if (!currentLine && line.trim() !== currentLine.trim()) {
-                //   line = line + "\n";
-                // }
-                // enter a new row
-                if (/^([|]\s+)+[|]$/.test(line)) {
-                    const _pos = this.editor.selection.active;
-                    this.setCursorPosition(new mte_kernel_1.Point(_pos.line, 2));
-                    console.log(`Enter ? ${_pos.line}`);
-                    const currentLine = this.editor.document.lineAt(_pos.line).text;
-                    const isCurrentLineBlank = /^([|]\s+)+[|]$/.test(currentLine);
-                    if (this.acceptsTableEdit(row) && _pos.line !== row && !isCurrentLineBlank) {
-                        return;
-                    }
-                    line = line.trim() + "\n";
-                }
-                else if (/^([|]\s+)+[|] $/.test(line)) {
-                    const _pos = this.editor.selection.active;
-                    console.log(`Tab ? ${_pos.line}`);
-                    const currentLine = this.editor.document.lineAt(_pos.line).text;
-                    const isCurrentLineBlank = /^([|]\s+)+[|]$/.test(currentLine);
-                    //if (this.acceptsTableEdit(row+1) && isCurrentLineBlank) {
-                    if (isCurrentLineBlank) {
-                        return;
-                    }
-                    line = line.trim();
-                }
-                else {
-                    line = line.trim();
-                }
-            }
-            this.editBuilder.insert(new vscode.Position(row, 0), line);
+        if (!this.transaction || !this.editBuilder) {
+            return;
         }
+        const lastRow = this.getLastRow();
+        if (row > lastRow) {
+            return;
+        }
+        if (/^([|]\s+)+[|]$/.test(line)) {
+            // enter a new row
+            const _pos = this.editor.selection.active;
+            if (this.acceptsTableEdit(row) && _pos.line !== row && !this.isCurrentLineBlank()) {
+                return;
+            }
+            line = line.trim() + "\n";
+            this.setCursorPosition(new mte_kernel_1.Point(_pos.line, 2));
+        }
+        else if (/^([|]\s+)+[|] $/.test(line)) {
+            // tab
+            if (this.acceptsTableEdit(row + 1) && this.isCurrentLineBlank()) {
+                // this is the case for tab at the end of table
+                return;
+            }
+            line = line.trim();
+        }
+        else {
+            line = line.trim();
+        }
+        this.editBuilder.insert(new vscode.Position(row, 0), line);
     }
     /**
      * Deletes a line at a specified row.
@@ -131,20 +118,16 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      * @param row number Row index, starts from 0.
      */
     deleteLine(row) {
+        if (!this.transaction || !this.editBuilder) {
+            return;
+        }
         const lastRow = this.getLastRow();
         if (row > lastRow) {
             return;
         }
-        const _pos = this.editor.selection.active;
-        const currentLine = this.editor.document.lineAt(_pos.line).text;
-        if (/^([|]\s+)+[|]$/.test(currentLine)) {
-            return;
-        }
         const line = this.editor.document.lineAt(row);
         const _range = line.range;
-        if (this.transaction && this.editBuilder) {
-            this.editBuilder.delete(_range);
-        }
+        this.editBuilder.delete(_range);
     }
     /**
      * Replace lines in a specified range.
@@ -154,10 +137,12 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
      * @param lines string[] An array of string. Each strings must not contain an EOL like "\n" or "\r".
      */
     replaceLines(startRow, endRow, lines) {
-        const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
-        if (this.transaction && this.editBuilder) {
-            this.editBuilder.replace(_range, lines.join("\n") + "\n");
+        if (!this.transaction || !this.editBuilder) {
+            return;
         }
+        const _range = new vscode.Range(new vscode.Position(startRow, 0), new vscode.Position(endRow, 0));
+        const trimedLines = lines.map(line => line.trimRight());
+        this.editBuilder.replace(_range, trimedLines.join("\n") + "\n");
     }
     transact(func) {
         this.transaction = true;
@@ -166,6 +151,11 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
             func();
             this.transaction = false;
         });
+    }
+    isCurrentLineBlank() {
+        const _pos = this.editor.selection.active;
+        const currentLine = this.editor.document.lineAt(_pos.line).text;
+        return /^([|]\s+)+[|]$/.test(currentLine);
     }
     destroy() {
     }
