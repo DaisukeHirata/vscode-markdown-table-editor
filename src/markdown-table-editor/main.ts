@@ -1,8 +1,13 @@
 import * as vscode from 'vscode';
-import { TableEditor, options } from "@susisu/mte-kernel";
+// @ts-ignore
+import { TableEditor, options } from "@susisu/mte-kernel"; 
 import TextEditorInterface from "./text-editor-interface";
 import { runInThisContext } from 'vm';
 import { truncate } from 'fs/promises';
+
+interface KeyBindingsArgs {
+  command: string;
+}
 
 export class MarkdownTableEditor {
 
@@ -84,9 +89,9 @@ export class MarkdownTableEditor {
     this.tableEditor.selectCell(this.getOptions());
   };
 
-  public keyBindings = (args: {}) => {
+  public keyBindings = (args: KeyBindingsArgs) => {
     const result = this.tableEditor.cursorIsInTable(this.getOptions());
-    const command = args['command'];
+    const command = args.command;
     if (result) {
       switch (command) {
         case 'nextCell':

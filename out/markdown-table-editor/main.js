@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MarkdownTableEditor = void 0;
 const vscode = require("vscode");
+// @ts-ignore
 const mte_kernel_1 = require("@susisu/mte-kernel");
 const text_editor_interface_1 = require("./text-editor-interface");
 class MarkdownTableEditor {
@@ -56,7 +57,7 @@ class MarkdownTableEditor {
         };
         this.keyBindings = (args) => {
             const result = this.tableEditor.cursorIsInTable(this.getOptions());
-            const command = args['command'];
+            const command = args.command;
             if (result) {
                 switch (command) {
                     case 'nextCell':

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+// @ts-ignore
 import { Point, Range, ITextEditor } from "@susisu/mte-kernel";
 
 export default class TextEditorInterface extends ITextEditor {
