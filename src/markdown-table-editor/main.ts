@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { TableEditor, options } from "@susisu/mte-kernel";
 import TextEditorInterface from "./text-editor-interface";
 import { runInThisContext } from 'vm';
+import { truncate } from 'fs/promises';
 
 export class MarkdownTableEditor {
 
@@ -32,47 +33,47 @@ export class MarkdownTableEditor {
   };
 
   public formatAll = () => {
-    this.tableEditor.formatAll(options({}));
+    this.tableEditor.formatAll(this.getOptions());
   };
 
   public format = () => {
-    this.tableEditor.format(options({}));
+    this.tableEditor.format(this.getOptions());
   };
 
   public nextCell = () => {
-    this.tableEditor.nextCell(options({}));
+    this.tableEditor.nextCell(this.getOptions());
   };
 
   public previousCell = () => {
-    this.tableEditor.previousCell(options({}));    
+    this.tableEditor.previousCell(this.getOptions());
   };  
 
   public nextRow = () => {
-    this.tableEditor.nextRow(options({}));
+    this.tableEditor.nextRow(this.getOptions());
   };
 
   public cursorIsInTable = () : Boolean => {
-    return this.tableEditor.cursorIsInTable(options({}));
+    return this.tableEditor.cursorIsInTable(this.getOptions());
   };
 
   public deleteColumn = () => {
-    this.tableEditor.deleteColumn(options({}));
+    this.tableEditor.deleteColumn(this.getOptions());
   };
 
   public deleteRow = () => {
-    this.tableEditor.deleteRow(options({}));
+    this.tableEditor.deleteRow(this.getOptions());
   };
 
   public escape = () => {
-    this.tableEditor.escape(options({}));
+    this.tableEditor.escape(this.getOptions());
   };
 
   public insertColumn = () => {
-    this.tableEditor.insertColumn(options({}));
+    this.tableEditor.insertColumn(this.getOptions());
   };
 
   public insertRow = () => {
-    this.tableEditor.insertRow(options({}));
+    this.tableEditor.insertRow(this.getOptions());
   };
 
   public resetSmartCursor = () => {
@@ -80,11 +81,11 @@ export class MarkdownTableEditor {
   };
   
   public selectCell = () => {
-    this.tableEditor.selectCell(options({}));
+    this.tableEditor.selectCell(this.getOptions());
   };
 
   public keyBindings = (args: {}) => {
-    const result = this.tableEditor.cursorIsInTable(options({}));
+    const result = this.tableEditor.cursorIsInTable(this.getOptions());
     const command = args['command'];
     if (result) {
       switch (command) {
@@ -111,5 +112,15 @@ export class MarkdownTableEditor {
           break;
       }
     }
-  };  
+  };
+
+  getOptions() {
+    const config = vscode.workspace.getConfiguration('vscode-markdown-table-editor');
+    return options({
+      textWidthOptions : {
+        normalize      : config.get('normalize'),
+        ambiguousAsWide: config.get('ambiguousAsWide')
+      }
+    });
+  }
 }

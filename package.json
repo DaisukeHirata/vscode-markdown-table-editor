@@ -27,6 +27,21 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+    "configuration": {
+      "title": "VSCode Markdown Table Editor",
+      "properties": {
+        "vscode-markdown-table-editor.normalize": {
+          "type": "boolean",
+          "default": true,
+          "description": "Normalizes texts before computing text widths."
+				},
+				"vscode-markdown-table-editor.ambiguousAsWide": {
+						"type": "boolean",
+						"default": true,
+						"description": "Treats East Asian Ambiguous characters as wide."
+				}
+      }
+    },
 		"commands": [
 			{
 				"command": "vscode-markdown-table-editor.formatAll",
@@ -129,7 +144,31 @@
 				"mac": "escape",
 				"when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus"
 			}			
-		]
+		],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus",
+          "group": "vscode-markdown-table-editor",
+          "command": "vscode-markdown-table-editor.insertRow"
+				},
+        {
+          "when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus",
+          "group": "vscode-markdown-table-editor",
+          "command": "vscode-markdown-table-editor.deleteRow"
+				},
+        {
+          "when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus",
+          "group": "vscode-markdown-table-editor",
+          "command": "vscode-markdown-table-editor.insertColumn"
+				},
+        {
+          "when": "vscode-markdown-table-editor.enabled && editorLangId == markdown && editorTextFocus",
+          "group": "vscode-markdown-table-editor",
+          "command": "vscode-markdown-table-editor.deleteColumn"
+        }
+      ]
+    }
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

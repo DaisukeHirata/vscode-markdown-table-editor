@@ -1,35 +1,109 @@
-# vscode-markdown-table-editor README
+# VSCode Markdown Table Editor README
 
-This is the README for your extension "vscode-markdown-table-editor". After writing up a brief description, we recommend including the following sections.
+Markdown table editor/formatter for vscode. inspired by [atom-markdown-table-editor](https://github.com/susisu/atom-markdown-table-editor). Basically its core functionality comes from [mte-kernel](https://github.com/susisu/mte-kernel) which provides a text editor independent implementation for markdown table editing.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Format tables
+- Move the cursor from cell to cell
+- Alter column's alignment
+- Insert and delete rows and columns
 
-For example if there is an image subfolder under your extension project workspace:
+![demo](https://user-images.githubusercontent.com/1229698/93194724-5fe76c80-f783-11ea-8889-7ccaad3088dd.gif)
 
-\!\[feature X\]\(images/feature-x.png\)
+### Quick guide
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+0. Set editor's language to `Markdown`.
+1. Input a pipe `|` and some content (the cursor position is indicated by `_`).
+    ``` markdown
+    | foo_
+    ```
+    (If you are using [language-markdown](https://atom.io/packages/language-markdown), don't forget a space after a pipe.)
+2. Hit <kbd>tab</kbd> to move to the next cell.
+    ``` markdown
+    | foo | _
+    | --- |
+    ```
+3. Continue typing.
+    ``` markdown
+    | foo | bar | _
+    | --- | --- |
+    ```
+4. Hit <kbd>enter</kbd> to move to the next row.
+    ``` markdown
+    | foo | bar |
+    | --- | --- |
+    | _   |     |
+    ```
+5. Continue typing...
+    ``` markdown
+    | foo | bar |
+    | --- | --- |
+    | baz | _   |
+    ```
+6. Hit <kbd>esc</kbd> to finish editing the table.
+    ``` markdown
+    | foo | bar |
+    | --- | --- |
+    | baz |     |
+    _
+    ```
+
+### Commands
+
+| Name                       | Description                              | Keybinding                        |
+| -------------------------- | ---------------------------------------- | --------------------------------- |
+| Next Cell                  | Move to the next cell                    | <kbd>tab</kbd>                    |
+| Previous Cell              | Move to the previous cell                | <kbd>shift</kbd> + <kbd>tab</kbd> |
+| Next Row                   | Move to the next row                     | <kbd>enter</kbd>                  |
+| Escape                     | Escape from the table                    | <kbd>escape</kbd>                 |
+| Format                     | Just format the table                    |                                   |
+| Format All                 | Format all the tables in the text editor |                                   |
+| Select Cell                | Select the cell content                  |                                   |
+| Insert Row                 | Insert an empty row                      |                                   |
+| Delete Row                 | Delete the row                           |                                   |
+| Insert Column              | Insert an empty column                   |                                   |
+| Delete Column              | Delete the column                        |                                   |
+| Enable Table Editing Mode  | Enable Table Editing Mode                |                                   |
+| Disable Table Editing Mode | Disable Table Editing Mode               |                                   |
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Please set keyboard shortcuts for `Tab`, `Enter`, `Shift+Tab` as **User(high priority)**, in the case the shortcuts conflicts with other extension's shortcuts. This shortcuts are enabled only when cursor inside markdown table in markdown file (vscode-markdown-table-editor.enabled==true).
+![image](https://user-images.githubusercontent.com/1229698/93197059-282df400-f786-11ea-9eae-2d6e1e012683.png)
+
+Or set following in keybinding.json as User setting.
+
+```json
+[
+  {
+    "key": "enter",
+    "command": "vscode-markdown-table-editor.nextRow",
+    "when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+  },
+  {
+    "key": "tab",
+    "command": "vscode-markdown-table-editor.nextCell",
+    "when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+  },
+  {
+    "key": "shift+tab",
+    "command": "vscode-markdown-table-editor.previousCell",
+    "when": "editorTextFocus && vscode-markdown-table-editor.enabled"
+  }
+]
+```
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* `vscode-markdown-table-editor.normalize`: enable/disable Normalizes texts before computing text widths.
+* `vscode-markdown-table-editor.ambiguousAsWide`: enable/disable Treats East Asian Ambiguous characters as wide.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+Currently No.
 
 ## Release Notes
 
@@ -37,29 +111,8 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial release
 
 -----------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**

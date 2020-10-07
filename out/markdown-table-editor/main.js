@@ -16,46 +16,46 @@ class MarkdownTableEditor {
             vscode.commands.executeCommand('setContext', 'vscode-markdown-table-editor.enabled', bool);
         };
         this.formatAll = () => {
-            this.tableEditor.formatAll(mte_kernel_1.options({}));
+            this.tableEditor.formatAll(this.getOptions());
         };
         this.format = () => {
-            this.tableEditor.format(mte_kernel_1.options({}));
+            this.tableEditor.format(this.getOptions());
         };
         this.nextCell = () => {
-            this.tableEditor.nextCell(mte_kernel_1.options({}));
+            this.tableEditor.nextCell(this.getOptions());
         };
         this.previousCell = () => {
-            this.tableEditor.previousCell(mte_kernel_1.options({}));
+            this.tableEditor.previousCell(this.getOptions());
         };
         this.nextRow = () => {
-            this.tableEditor.nextRow(mte_kernel_1.options({}));
+            this.tableEditor.nextRow(this.getOptions());
         };
         this.cursorIsInTable = () => {
-            return this.tableEditor.cursorIsInTable(mte_kernel_1.options({}));
+            return this.tableEditor.cursorIsInTable(this.getOptions());
         };
         this.deleteColumn = () => {
-            this.tableEditor.deleteColumn(mte_kernel_1.options({}));
+            this.tableEditor.deleteColumn(this.getOptions());
         };
         this.deleteRow = () => {
-            this.tableEditor.deleteRow(mte_kernel_1.options({}));
+            this.tableEditor.deleteRow(this.getOptions());
         };
         this.escape = () => {
-            this.tableEditor.escape(mte_kernel_1.options({}));
+            this.tableEditor.escape(this.getOptions());
         };
         this.insertColumn = () => {
-            this.tableEditor.insertColumn(mte_kernel_1.options({}));
+            this.tableEditor.insertColumn(this.getOptions());
         };
         this.insertRow = () => {
-            this.tableEditor.insertRow(mte_kernel_1.options({}));
+            this.tableEditor.insertRow(this.getOptions());
         };
         this.resetSmartCursor = () => {
             this.tableEditor.resetSmartCursor();
         };
         this.selectCell = () => {
-            this.tableEditor.selectCell(mte_kernel_1.options({}));
+            this.tableEditor.selectCell(this.getOptions());
         };
         this.keyBindings = (args) => {
-            const result = this.tableEditor.cursorIsInTable(mte_kernel_1.options({}));
+            const result = this.tableEditor.cursorIsInTable(this.getOptions());
             const command = args['command'];
             if (result) {
                 switch (command) {
@@ -89,6 +89,15 @@ class MarkdownTableEditor {
             const textEditor = new text_editor_interface_1.default(editor); // interface to the text editor
             this.tableEditor = new mte_kernel_1.TableEditor(textEditor);
         }
+    }
+    getOptions() {
+        const config = vscode.workspace.getConfiguration('vscode-markdown-table-editor');
+        return mte_kernel_1.options({
+            textWidthOptions: {
+                normalize: config.get('normalize'),
+                ambiguousAsWide: config.get('ambiguousAsWide')
+            }
+        });
     }
 }
 exports.MarkdownTableEditor = MarkdownTableEditor;
