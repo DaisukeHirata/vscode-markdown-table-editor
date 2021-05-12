@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
+// @ts-ignore
 const mte_kernel_1 = require("@susisu/mte-kernel");
 class TextEditorInterface extends mte_kernel_1.ITextEditor {
     constructor(textEditor) {
@@ -87,9 +88,6 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
             return;
         }
         const lastRow = this.getLastRow();
-        if (row > lastRow) {
-            return;
-        }
         if (/^([|]\s+)+[|]$/.test(line)) {
             // enter a new row
             const _pos = this.editor.selection.active;
@@ -97,10 +95,18 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
                 return;
             }
             line = line.trim() + "\n";
+            if (row > lastRow) {
+                // last row of the file
+                line = "\n" + line.trim();
+            }
             this.setCursorPosition(new mte_kernel_1.Point(_pos.line, 2));
         }
         else if (/^([|]\s+)+[|] $/.test(line)) {
             // tab
+            if (row > lastRow) {
+                // last row of the file
+                return;
+            }
             if (this.acceptsTableEdit(row + 1) && this.isCurrentLineBlank()) {
                 // this is the case for tab at the end of table
                 return;
@@ -109,6 +115,10 @@ class TextEditorInterface extends mte_kernel_1.ITextEditor {
         }
         else {
             line = line.trim();
+            if (row > lastRow) {
+                // last row of the file
+                line = "\n" + line.trim();
+            }
         }
         this.editBuilder.insert(new vscode.Position(row, 0), line);
     }

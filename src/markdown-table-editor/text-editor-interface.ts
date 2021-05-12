@@ -102,9 +102,6 @@ export default class TextEditorInterface extends ITextEditor {
     }
 
     const lastRow = this.getLastRow();
-    if (row > lastRow) {
-      return;
-    }
 
     if (/^([|]\s+)+[|]$/.test(line)) {
       // enter a new row
@@ -113,9 +110,17 @@ export default class TextEditorInterface extends ITextEditor {
         return;
       }
       line = line.trim() + "\n";
+      if (row > lastRow) {
+        // last row of the file
+        line = "\n" + line.trim();
+      }
       this.setCursorPosition(new Point(_pos.line, 2));
     } else if (/^([|]\s+)+[|] $/.test(line)) {
       // tab
+      if (row > lastRow) {
+        // last row of the file
+        return;
+      }
       if (this.acceptsTableEdit(row + 1) && this.isCurrentLineBlank()) {
         // this is the case for tab at the end of table
         return;
@@ -123,6 +128,10 @@ export default class TextEditorInterface extends ITextEditor {
       line = line.trim();
     } else {
       line = line.trim();
+      if (row > lastRow) {
+        // last row of the file
+        line = "\n" + line.trim();
+      }
     }
     this.editBuilder.insert(new vscode.Position(row, 0), line);
   }
