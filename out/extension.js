@@ -90,6 +90,8 @@ function activate(context) {
 }
 exports.activate = activate;
 // this method is called when your extension is deactivated
-function deactivate() { }
+function deactivate() {
+    console.log('your extension "vscode-markdown-table-editor" is deactivated!');
+}
 exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map
